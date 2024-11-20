@@ -6,7 +6,7 @@ const Accounts = () => {
 
   const krwAccount = accounts.find((account) => account.currency === "KRW");
   const orderableAmount = krwAccount
-    ? parseFloat(krwAccount.balance).toLocaleString()
+    ? parseFloat(krwAccount.balance).toFixed(0)
     : "0";
 
   const getCoinIconUrl = (symbol) =>
