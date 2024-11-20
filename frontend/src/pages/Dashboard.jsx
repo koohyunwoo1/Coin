@@ -1,11 +1,15 @@
 import Accounts from "../components/Accounts";
 import TradeForm from "../components/TradeForm";
+import "../style/Dashboard.css";
 
 const Dashboard = () => (
-  <div>
-    <h1>코인 정보</h1>
-    <Accounts />
-    <TradeForm />
+  <div className="dashboardContainer">
+    <div className="accountsSection">
+      <Accounts />
+    </div>
+    <div className="tradeFormSection">
+      <TradeForm />
+    </div>
   </div>
 );
 

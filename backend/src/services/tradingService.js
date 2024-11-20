@@ -27,4 +27,8 @@ const placeSellOrder = async (coinName, volume, price = null) => {
   return await postRequest("/orders", body);
 };
 
-module.exports = { getAccountInfo, placeBuyOrder, placeSellOrder };
+const cancelOrder = async (uuid) => {
+  return await deleteRequest(`/orders`, { uuid });
+};
+
+module.exports = { getAccountInfo, placeBuyOrder, placeSellOrder, cancelOrder };

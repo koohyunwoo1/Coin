@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { placeBuyOrder, placeSellOrder } from "../service/api";
+import "../style/TradeForm.css";
 
 const TradeForm = () => {
   const [coinName, setCoinName] = useState("");
@@ -33,6 +34,10 @@ const TradeForm = () => {
           alert("시장가 매도 주문 성공!");
         }
       }
+
+      setCoinName("");
+      setAmount("");
+      setPrice("");
     } catch (error) {
       alert("주문 실패. 콘솔을 확인해주세요.");
       console.error(error);
@@ -40,9 +45,9 @@ const TradeForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="tradeFormContainer" onSubmit={handleSubmit}>
       <h2>{type === "buy" ? "매수" : "매도"}</h2>
-      <div>
+      <div className="formGroup">
         <label>코인 이름:</label>
         <input
           type="text"
@@ -52,7 +57,7 @@ const TradeForm = () => {
           required
         />
       </div>
-      <div>
+      <div className="formGroup">
         <label>개수:</label>
         <input
           type="number"
@@ -62,7 +67,7 @@ const TradeForm = () => {
           required
         />
       </div>
-      <div>
+      <div className="formGroup">
         <label>가격 ({type === "buy" ? "지정가 매수" : "지정가 매도"}):</label>
         <input
           type="number"
@@ -73,14 +78,16 @@ const TradeForm = () => {
           }
         />
       </div>
-      <div>
+      <div className="formGroup">
         <label>타입:</label>
         <select value={type} onChange={(e) => setType(e.target.value)}>
           <option value="buy">매수</option>
           <option value="sell">매도</option>
         </select>
       </div>
-      <button type="submit">주문하기</button>
+      <button className="submitButton" type="submit">
+        주문하기
+      </button>
     </form>
   );
 };

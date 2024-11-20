@@ -6,6 +6,4 @@ const config = {
   BASE_URL: "https://api.upbit.com/v1",
 };
 
-console.log(config);
-
 module.exports = config;

@@ -1,0 +1,24 @@
+.dashboardContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 1200px;
+  height: 630px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+}
+
+.accountsSection {
+  flex: 6;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.tradeFormSection {
+  flex: 4;
+  padding: 20px;
+  border-radius: 8px;
+}

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { getAccounts } from "../service/api";
 import useCoinData from "../hooks/useCoinData";
+import coinMapping from "../constants/coinMapping";
+import "../style/Account.css";
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState([]);
@@ -12,30 +14,37 @@ const Accounts = () => {
     const fetchAccounts = async () => {
       try {
         const data = await getAccounts();
-        setAccounts(data);
-
         let total = 0;
 
-        const krwBalance = parseFloat(
-          data.find((account) => account.currency === "KRW")?.balance || 0
-        );
-        total += krwBalance;
+        const updatedAccounts = data
+          .map((account) => {
+            let evaluation = 0;
 
-        for (const account of data) {
-          if (account.currency === "KRW") continue;
+            if (account.currency === "KRW") {
+              evaluation = parseFloat(account.balance); // 원화 잔액 그대로 사용
+            } else {
+              const koreanName = coinMapping[account.currency];
+              const coinInfo = coinData.find(
+                (coin) => coin.koreanName === koreanName
+              );
 
-          const currentPrice = coinData.find(
-            (coin) => coin.koreanName === account.currency
-          )?.currentPrice;
+              if (coinInfo) {
+                const currentPrice = parseFloat(
+                  coinInfo.currentPrice.replace(/,/g, "")
+                );
+                evaluation = parseFloat(account.balance) * currentPrice;
+              }
+            }
 
-          if (currentPrice) {
-            const evaluation =
-              parseFloat(account.balance) *
-              parseFloat(currentPrice.replace(/,/g, ""));
             total += evaluation;
-          }
-        }
+            return {
+              ...account,
+              evaluation: evaluation.toFixed(2),
+            };
+          })
+          .sort((a, b) => parseFloat(b.evaluation) - parseFloat(a.evaluation));
 
+        setAccounts(updatedAccounts);
         setTotalAssets(total);
       } catch (error) {
         console.error("Failed to fetch accounts:", error);
@@ -47,22 +56,26 @@ const Accounts = () => {
     fetchAccounts();
   }, [coinData]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="loadingText">Loading...</p>;
   if (coinError)
-    return <p>현재가 정보를 가져오는 데 실패했습니다: {coinError}</p>;
+    return (
+      <p className="loadingText">
+        현재가 정보를 가져오는 데 실패했습니다: {coinError}
+      </p>
+    );
 
   return (
-    <div>
+    <div className="accountsContainer">
       <h2>내 자산</h2>
-      <p>총 자산: {totalAssets.toLocaleString()} KRW</p>
-      <ul>
+      <p className="totalAssets">총 자산: {totalAssets.toLocaleString()} KRW</p>
+      <ul className="accountList">
         {accounts.map((account, index) => (
-          <li key={index}>
-            {account.currency}: {account.balance} (
-            {account.unit_currency === "KRW"
-              ? "원화"
-              : `${account.unit_currency} 코인`}
-            )
+          <li className="accountListItem" key={index}>
+            <span className="accountText">{account.currency}</span>
+            <span className="accountText">개수: {account.balance} 개</span>
+            <span className="accountText">
+              평가 금액: {parseFloat(account.evaluation).toLocaleString()} KRW
+            </span>
           </li>
         ))}
       </ul>

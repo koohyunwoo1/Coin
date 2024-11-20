@@ -1,0 +1,58 @@
+.accountsContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 40px;
+}
+
+.accountsContainer h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: #333;
+  text-align: center;
+}
+
+.totalAssets {
+  font-size: 24px;
+  margin-bottom: 16px;
+  font-weight: bold;
+  color: black;
+  text-align: center;
+}
+
+.accountList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.accountListItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.accountListItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.accountText {
+  font-size: 16px;
+  color: #555;
+}
+
+.loadingText {
+  font-size: 18px;
+  color: #555;
+  text-align: center;
+  margin-top: 20px;
+}
