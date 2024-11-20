@@ -1,62 +1,19 @@
-import { useEffect, useState } from "react";
-import { getAccounts } from "../service/api";
-import useCoinData from "../hooks/useCoinData";
-import coinMapping from "../constants/coinMapping";
+import useAccounts from "../hooks/useAccounts";
 import "../style/Account.css";
 
 const Accounts = () => {
-  const [accounts, setAccounts] = useState([]);
-  const [totalAssets, setTotalAssets] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const { coinData, error: coinError } = useCoinData();
+  const { accounts, totalAssets, loading, coinError } = useAccounts();
 
-  useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        const data = await getAccounts();
-        let total = 0;
+  const krwAccount = accounts.find((account) => account.currency === "KRW");
+  const orderableAmount = krwAccount
+    ? parseFloat(krwAccount.balance).toLocaleString()
+    : "0";
 
-        const updatedAccounts = data
-          .map((account) => {
-            let evaluation = 0;
-
-            if (account.currency === "KRW") {
-              evaluation = parseFloat(account.balance); // 원화 잔액 그대로 사용
-            } else {
-              const koreanName = coinMapping[account.currency];
-              const coinInfo = coinData.find(
-                (coin) => coin.koreanName === koreanName
-              );
-
-              if (coinInfo) {
-                const currentPrice = parseFloat(
-                  coinInfo.currentPrice.replace(/,/g, "")
-                );
-                evaluation = parseFloat(account.balance) * currentPrice;
-              }
-            }
-
-            total += evaluation;
-            return {
-              ...account,
-              evaluation: evaluation.toFixed(2),
-            };
-          })
-          .sort((a, b) => parseFloat(b.evaluation) - parseFloat(a.evaluation));
-
-        setAccounts(updatedAccounts);
-        setTotalAssets(total);
-      } catch (error) {
-        console.error("Failed to fetch accounts:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAccounts();
-  }, [coinData]);
+  const getCoinIconUrl = (symbol) =>
+    `https://static.upbit.com/logos/${symbol}.png`;
 
   if (loading) return <p className="loadingText">Loading...</p>;
+
   if (coinError)
     return (
       <p className="loadingText">
@@ -66,18 +23,138 @@ const Accounts = () => {
 
   return (
     <div className="accountsContainer">
-      <h2>내 자산</h2>
-      <p className="totalAssets">총 자산: {totalAssets.toLocaleString()} KRW</p>
-      <ul className="accountList">
-        {accounts.map((account, index) => (
-          <li className="accountListItem" key={index}>
-            <span className="accountText">{account.currency}</span>
-            <span className="accountText">개수: {account.balance} 개</span>
-            <span className="accountText">
-              평가 금액: {parseFloat(account.evaluation).toLocaleString()} KRW
+      <h1>보유 자산</h1>
+      <div
+        className={`totalAssetsContainer ${
+          parseFloat(totalAssets.profitRate) > 0
+            ? "positive"
+            : parseFloat(totalAssets.profitRate) < 0
+            ? "negative"
+            : "neutral"
+        }`}
+      >
+        <div>
+          <p>
+            총 투자 금액: {parseFloat(totalAssets.investment).toLocaleString()}{" "}
+            <small style={{ fontSize: "12px", color: "gray" }}>KRW</small>
+          </p>
+          <p>
+            총 평가 금액: {parseFloat(totalAssets.evaluation).toLocaleString()}{" "}
+            <small style={{ fontSize: "12px", color: "gray" }}>KRW</small>
+          </p>
+          <p>
+            총 평가 손익:{" "}
+            <span
+              style={{
+                fontWeight: "bold",
+                color:
+                  parseFloat(totalAssets.evaluation) -
+                    parseFloat(totalAssets.investment) >
+                  0
+                    ? "red"
+                    : parseFloat(totalAssets.evaluation) -
+                        parseFloat(totalAssets.investment) <
+                      0
+                    ? "blue"
+                    : "black",
+              }}
+            >
+              {(
+                parseFloat(totalAssets.evaluation) -
+                parseFloat(totalAssets.investment)
+              ).toLocaleString()}{" "}
+              <small style={{ fontSize: "12px", color: "gray" }}>KRW</small>
             </span>
-          </li>
-        ))}
+          </p>
+          <p>
+            총 수익률:{" "}
+            <span
+              style={{
+                fontWeight: "bold",
+                color:
+                  parseFloat(totalAssets.profitRate) > 0
+                    ? "red"
+                    : parseFloat(totalAssets.profitRate) < 0
+                    ? "blue"
+                    : "black",
+              }}
+            >
+              {parseFloat(totalAssets.profitRate).toFixed(2)}%
+            </span>
+          </p>
+          <p>
+            주문 가능 금액:{" "}
+            <span style={{ fontWeight: "bold" }}>
+              {orderableAmount}{" "}
+              <small style={{ fontSize: "12px", color: "gray" }}>KRW</small>
+            </span>
+          </p>
+        </div>
+      </div>
+      <h1>보유 자산 목록</h1>
+      <ul className="accountList">
+        {accounts
+          .filter((account) => account.currency !== "KRW")
+          .map((account, index) => (
+            <li className="accountListItem" key={index}>
+              <div className="coinItem">
+                <div
+                  className="coinIcon"
+                  style={{
+                    background: `url(${getCoinIconUrl(
+                      account.currency
+                    )}) 0px 0px / cover no-repeat`,
+                  }}
+                ></div>
+                <div>
+                  <span className="accountTitle">{account.currencyKorean}</span>
+                  <span className="accountSymbol">({account.currency})</span>
+                </div>
+              </div>
+              <span className="accountText investment">
+                투자 금액: {parseFloat(account.investment).toLocaleString()}
+                <small
+                  style={{ marginLeft: "5px", fontSize: "12px", color: "gray" }}
+                >
+                  KRW
+                </small>
+              </span>
+              <span className="accountText">
+                평가 금액: {parseFloat(account.evaluation).toLocaleString()}
+                <small
+                  style={{ marginLeft: "5px", fontSize: "12px", color: "gray" }}
+                >
+                  KRW
+                </small>
+              </span>
+              <span className="accountText">
+                매수평균가:{" "}
+                {account.avg_buy_price
+                  ? parseFloat(account.avg_buy_price).toLocaleString()
+                  : "N/A"}
+                <small
+                  style={{ marginLeft: "5px", fontSize: "12px", color: "gray" }}
+                >
+                  KRW
+                </small>
+              </span>
+              <span className="accountText">
+                보유 개수: {parseFloat(account.balance).toFixed(2)}{" "}
+                {account.currency}
+              </span>
+              <span
+                className={`profitRate ${
+                  parseFloat(account.profitRate) > 0
+                    ? "positive"
+                    : parseFloat(account.profitRate) < 0
+                    ? "negative"
+                    : "neutral"
+                }`}
+              >
+                수익률: {parseFloat(account.profitRate).toFixed(2)}%
+              </span>
+            </li>
+          ))}
       </ul>
     </div>
   );

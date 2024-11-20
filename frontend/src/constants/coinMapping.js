@@ -1,4 +1,5 @@
 const coinMapping = {
+  KRW: "원화",
   BTC: "비트코인",
   ETH: "이더리움",
   XRP: "리플",

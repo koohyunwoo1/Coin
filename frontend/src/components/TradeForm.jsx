@@ -7,30 +7,59 @@ const TradeForm = () => {
   const [amount, setAmount] = useState("");
   const [price, setPrice] = useState("");
   const [type, setType] = useState("buy");
+  const [isKrwInput, setIsKrwInput] = useState(true);
+
+  const fetchCurrentPrice = async (coinName) => {
+    try {
+      const response = await fetch(
+        `https://api.upbit.com/v1/ticker?markets=${coinName}`
+      );
+      const data = await response.json();
+      return data[0].trade_price;
+    } catch (error) {
+      console.error("Failed to fetch current price:", error);
+      throw new Error("현재가를 가져오는 데 실패했습니다.");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!coinName || !amount || (type === "buy" && price === "")) {
+    if (!coinName || !amount) {
       alert("모든 값을 입력해주세요.");
       return;
     }
 
     try {
+      const currentPrice = await fetchCurrentPrice(coinName);
+      let volume;
+
+      if (isKrwInput) {
+        // 금액(KRW)으로 입력한 경우 코인 개수 계산
+        volume = parseFloat(amount) / currentPrice;
+      } else {
+        // 코인 개수로 입력한 경우 그대로 사용
+        volume = parseFloat(amount);
+      }
+
       if (type === "buy") {
         if (price) {
-          await placeBuyOrder(coinName, parseFloat(amount), parseFloat(price));
+          // 지정가 매수
+          await placeBuyOrder(coinName, volume, parseFloat(price));
           alert("지정가 매수 주문 성공!");
         } else {
-          await placeBuyOrder(coinName, parseFloat(amount));
+          // 시장가 매수
+          await placeBuyOrder(coinName, volume);
           alert("시장가 매수 주문 성공!");
         }
       } else {
         if (price) {
-          await placeSellOrder(coinName, parseFloat(amount), parseFloat(price));
+          // 지정가 매도
+          await placeSellOrder(coinName, volume, parseFloat(price));
           alert("지정가 매도 주문 성공!");
         } else {
-          await placeSellOrder(coinName, parseFloat(amount));
+          // 시장가 매도
+          await placeSellOrder(coinName, volume);
           alert("시장가 매도 주문 성공!");
         }
       }
@@ -46,7 +75,7 @@ const TradeForm = () => {
 
   return (
     <form className="tradeFormContainer" onSubmit={handleSubmit}>
-      <h2>{type === "buy" ? "매수" : "매도"}</h2>
+      <h1>{type === "buy" ? "매수" : "매도"}</h1>
       <div className="formGroup">
         <label>코인 이름:</label>
         <input
@@ -58,12 +87,14 @@ const TradeForm = () => {
         />
       </div>
       <div className="formGroup">
-        <label>개수:</label>
+        <label>{isKrwInput ? "금액 (KRW)" : "개수"}:</label>
         <input
           type="number"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          placeholder="매수/매도 개수"
+          placeholder={
+            isKrwInput ? "매수/매도할 금액 (KRW)" : "매수/매도할 코인 개수"
+          }
           required
         />
       </div>
@@ -83,6 +114,16 @@ const TradeForm = () => {
         <select value={type} onChange={(e) => setType(e.target.value)}>
           <option value="buy">매수</option>
           <option value="sell">매도</option>
+        </select>
+      </div>
+      <div className="formGroup">
+        <label>입력 방식:</label>
+        <select
+          value={isKrwInput ? "krw" : "coin"}
+          onChange={(e) => setIsKrwInput(e.target.value === "krw")}
+        >
+          <option value="krw">금액 (KRW)</option>
+          <option value="coin">개수</option>
         </select>
       </div>
       <button className="submitButton" type="submit">
