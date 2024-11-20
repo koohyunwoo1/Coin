@@ -8,7 +8,7 @@ const {
 const getAccounts = async (req, res) => {
   try {
     const accounts = await getAccountInfo();
-    console.log(accounts);
+    // console.log(accounts);
     res.status(200).json({ success: true, data: accounts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

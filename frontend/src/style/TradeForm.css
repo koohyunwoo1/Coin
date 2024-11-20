@@ -12,8 +12,7 @@
 
 .tradeFormContainer h1 {
   font-size: 24px;
-  margin-bottom: 16px;
-  color: #333;
+  color: black;
   text-align: left;
   font-weight: bold;
 }
@@ -39,7 +38,7 @@
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  color: #555;
+  color: black;
 }
 
 .formGroup input,

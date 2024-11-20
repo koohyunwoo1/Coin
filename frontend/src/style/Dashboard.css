@@ -6,19 +6,24 @@
   max-width: 1200px;
   height: 630px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20 20 0 20;
   background-color: white;
   border-radius: 8px;
 }
 
 .accountsSection {
   flex: 6;
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
 }
 
 .tradeFormSection {
   flex: 4;
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
+}
+
+.warningSection {
+  padding: 10px;
+  margin-left: 25px;
 }
