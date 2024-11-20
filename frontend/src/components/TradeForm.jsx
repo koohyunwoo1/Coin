@@ -17,16 +17,24 @@ const TradeForm = () => {
       const data = await response.json();
       return data[0].trade_price;
     } catch (error) {
-      console.error("Failed to fetch current price:", error);
+      console.error(error);
       throw new Error("현재가를 가져오는 데 실패했습니다.");
     }
+  };
+
+  const speak = (message) => {
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.lang = "ko-KR";
+    utterance.rate = 2;
+    synth.speak(utterance);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!coinName || !amount) {
-      alert("모든 값을 입력해주세요.");
+      speak("모든 값을 입력해주세요.");
       return;
     }
 
@@ -46,21 +54,21 @@ const TradeForm = () => {
         if (price) {
           // 지정가 매수
           await placeBuyOrder(coinName, volume, parseFloat(price));
-          alert("지정가 매수 주문 성공!");
+          speak("지정가 매수가 체결되었습니다.");
         } else {
           // 시장가 매수
           await placeBuyOrder(coinName, volume);
-          alert("시장가 매수 주문 성공!");
+          speak("시장가 매수가 체결되었습니다.");
         }
       } else {
         if (price) {
           // 지정가 매도
           await placeSellOrder(coinName, volume, parseFloat(price));
-          alert("지정가 매도 주문 성공!");
+          speak("지정가 매도가 체결되었습니다.");
         } else {
           // 시장가 매도
           await placeSellOrder(coinName, volume);
-          alert("시장가 매도 주문 성공!");
+          speak("시장가 매도가 체결되었습니다.");
         }
       }
 
@@ -68,7 +76,7 @@ const TradeForm = () => {
       setAmount("");
       setPrice("");
     } catch (error) {
-      alert("주문 실패. 콘솔을 확인해주세요.");
+      speak("주문 실패");
       console.error(error);
     }
   };
