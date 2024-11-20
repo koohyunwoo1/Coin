@@ -26,7 +26,7 @@ const TradeForm = () => {
     const synth = window.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance(message);
     utterance.lang = "ko-KR";
-    utterance.rate = 2;
+    utterance.rate = 2; // 음성 속도 설정
     synth.speak(utterance);
   };
 
@@ -54,21 +54,21 @@ const TradeForm = () => {
         if (price) {
           // 지정가 매수
           await placeBuyOrder(coinName, volume, parseFloat(price));
-          speak("지정가 매수가 체결되었습니다.");
+          speak("지정가 매수 주문이 등록되었습니다.");
         } else {
           // 시장가 매수
           await placeBuyOrder(coinName, volume);
-          speak("시장가 매수가 체결되었습니다.");
+          speak("시장가 매수 주문이 등록되었습니다.");
         }
       } else {
         if (price) {
           // 지정가 매도
           await placeSellOrder(coinName, volume, parseFloat(price));
-          speak("지정가 매도가 체결되었습니다.");
+          speak("지정가 매도 주문이 등록되었습니다.");
         } else {
           // 시장가 매도
           await placeSellOrder(coinName, volume);
-          speak("시장가 매도가 체결되었습니다.");
+          speak("시장가 매도 주문이 등록되었습니다.");
         }
       }
 
