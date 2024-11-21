@@ -38,7 +38,6 @@
   border-radius: 4px;
   text-align: left;
   background-color: white;
-  gap: 20px;
 }
 
 .totalAssetsContainer .investment {
@@ -120,21 +119,8 @@
   color: gray;
 }
 
-.assetsContainer {
-  flex: 1;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  font-size: 16px;
-}
-
 .chartContainer {
-  width: 50%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-}
-
-.chartContainer canvas {
-  max-width: 300px;
-  max-height: 300px;
+  margin-top: 60px;
+  width: 400px;
+  height: 400px;
 }

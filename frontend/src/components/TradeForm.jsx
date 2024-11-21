@@ -121,7 +121,7 @@ const TradeForm = () => {
 
   return (
     <>
-      <ToastContainer /> {/* 토스트 알림 컴포넌트 추가 */}
+      <ToastContainer />
       <form className="tradeFormContainer" onSubmit={handleSubmit}>
         <h1>{type === "buy" ? "매수" : "매도"}</h1>
         <div className="formGroup">
