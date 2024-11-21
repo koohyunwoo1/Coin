@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { placeBuyOrder, placeSellOrder } from "../service/api";
+import coinMapping from "../constants/coinMapping";
 import "../style/TradeForm.css";
 
 const TradeForm = () => {
-  const [coinName, setCoinName] = useState("");
+  const [coinNameInput, setCoinNameInput] = useState("");
   const [amount, setAmount] = useState("");
   const [price, setPrice] = useState("");
   const [type, setType] = useState("buy");
   const [isKrwInput, setIsKrwInput] = useState(true);
 
-  const fetchCurrentPrice = async (coinName) => {
+  const fetchCurrentPrice = async (marketName) => {
     try {
       const response = await fetch(
-        `https://api.upbit.com/v1/ticker?markets=${coinName}`
+        `https://api.upbit.com/v1/ticker?markets=${marketName}`
       );
       const data = await response.json();
       return data[0].trade_price;
@@ -26,53 +27,57 @@ const TradeForm = () => {
     const synth = window.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance(message);
     utterance.lang = "ko-KR";
-    utterance.rate = 2; // 음성 속도 설정
+    utterance.rate = 2;
     synth.speak(utterance);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!coinName || !amount) {
+    if (!coinNameInput || !amount) {
       speak("모든 값을 입력해주세요.");
       return;
     }
 
+    // 한글 이름 -> 시장 이름 변환
+    const marketName = Object.keys(coinMapping).find(
+      (key) => coinMapping[key] === coinNameInput
+    );
+
+    if (!marketName) {
+      speak("유효한 코인 이름을 입력해주세요.");
+      return;
+    }
+
     try {
-      const currentPrice = await fetchCurrentPrice(coinName);
+      const currentPrice = await fetchCurrentPrice(`KRW-${marketName}`);
       let volume;
 
       if (isKrwInput) {
-        // 금액(KRW)으로 입력한 경우 코인 개수 계산
         volume = parseFloat(amount) / currentPrice;
       } else {
-        // 코인 개수로 입력한 경우 그대로 사용
         volume = parseFloat(amount);
       }
 
       if (type === "buy") {
         if (price) {
-          // 지정가 매수
-          await placeBuyOrder(coinName, volume, parseFloat(price));
+          await placeBuyOrder(`KRW-${marketName}`, volume, parseFloat(price));
           speak("지정가 매수 주문이 등록되었습니다.");
         } else {
-          // 시장가 매수
-          await placeBuyOrder(coinName, volume);
+          await placeBuyOrder(`KRW-${marketName}`, volume);
           speak("시장가 매수 주문이 등록되었습니다.");
         }
       } else {
         if (price) {
-          // 지정가 매도
-          await placeSellOrder(coinName, volume, parseFloat(price));
+          await placeSellOrder(`KRW-${marketName}`, volume, parseFloat(price));
           speak("지정가 매도 주문이 등록되었습니다.");
         } else {
-          // 시장가 매도
-          await placeSellOrder(coinName, volume);
+          await placeSellOrder(`KRW-${marketName}`, volume);
           speak("시장가 매도 주문이 등록되었습니다.");
         }
       }
 
-      setCoinName("");
+      setCoinNameInput("");
       setAmount("");
       setPrice("");
     } catch (error) {
@@ -88,9 +93,9 @@ const TradeForm = () => {
         <label>코인 이름:</label>
         <input
           type="text"
-          value={coinName}
-          onChange={(e) => setCoinName(e.target.value)}
-          placeholder="예: KRW-BTC"
+          value={coinNameInput}
+          onChange={(e) => setCoinNameInput(e.target.value)}
+          placeholder="예: 비트코인"
           required
         />
       </div>

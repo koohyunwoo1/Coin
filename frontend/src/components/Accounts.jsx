@@ -25,7 +25,6 @@ const Accounts = () => {
       </p>
     );
 
-  // 코인 비중 데이터 생성
   const filteredAccounts = accounts.filter(
     (account) => account.currency !== "KRW"
   );
