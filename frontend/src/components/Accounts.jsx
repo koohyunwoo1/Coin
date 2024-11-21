@@ -1,5 +1,9 @@
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Pie } from "react-chartjs-2";
 import useAccounts from "../hooks/useAccounts";
 import "../style/Account.css";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Accounts = () => {
   const { accounts, totalAssets, loading, coinError } = useAccounts();
@@ -20,6 +24,42 @@ const Accounts = () => {
         현재가 정보를 가져오는 데 실패했습니다: {coinError}
       </p>
     );
+
+  // 코인 비중 데이터 생성
+  const filteredAccounts = accounts.filter(
+    (account) => account.currency !== "KRW"
+  );
+  const coinLabels = filteredAccounts.map(
+    (account) => `${account.currencyKorean} (${account.currency})`
+  );
+  const coinData = filteredAccounts.map((account) =>
+    parseFloat(account.evaluation)
+  );
+
+  const pieData = {
+    labels: coinLabels,
+    datasets: [
+      {
+        data: coinData,
+        backgroundColor: [
+          "#FF6384",
+          "#36A2EB",
+          "#FFCE56",
+          "#4BC0C0",
+          "#9966FF",
+          "#FF9F40",
+        ],
+        hoverBackgroundColor: [
+          "#FF6384",
+          "#36A2EB",
+          "#FFCE56",
+          "#4BC0C0",
+          "#9966FF",
+          "#FF9F40",
+        ],
+      },
+    ],
+  };
 
   return (
     <div className="accountsContainer">
@@ -89,6 +129,9 @@ const Accounts = () => {
               <small style={{ fontSize: "12px", color: "gray" }}>KRW</small>
             </span>
           </p>
+          <div className="chartContainer">
+            <Pie data={pieData} />
+          </div>
         </div>
       </div>
       <h1>보유 자산 목록</h1>

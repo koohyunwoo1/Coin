@@ -95,7 +95,18 @@ const TradeForm = () => {
         />
       </div>
       <div className="formGroup">
-        <label>{isKrwInput ? "금액 (KRW)" : "개수"}:</label>
+        <label>
+          {isKrwInput ? (
+            <>
+              금액 (KRW):{" "}
+              <span style={{ fontSize: "0.8rem", color: "#666" }}>
+                금액은 5천원 이상 매수해주세요.
+              </span>
+            </>
+          ) : (
+            "개수"
+          )}
+        </label>
         <input
           type="number"
           value={amount}

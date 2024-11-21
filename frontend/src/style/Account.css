@@ -118,3 +118,16 @@
   font-size: 14px;
   color: gray;
 }
+
+.chartContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  width: 100%;
+}
+
+.chartContainer canvas {
+  max-width: 300px;
+  max-height: 300px;
+}
