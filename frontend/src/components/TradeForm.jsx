@@ -90,6 +90,13 @@ const TradeForm = () => {
     <form className="tradeFormContainer" onSubmit={handleSubmit}>
       <h1>{type === "buy" ? "매수" : "매도"}</h1>
       <div className="formGroup">
+        <label>타입:</label>
+        <select value={type} onChange={(e) => setType(e.target.value)}>
+          <option value="buy">매수</option>
+          <option value="sell">매도</option>
+        </select>
+      </div>
+      <div className="formGroup">
         <label>코인 이름:</label>
         <input
           type="text"
@@ -132,13 +139,6 @@ const TradeForm = () => {
             type === "buy" ? "지정가 매수 희망 가격" : "지정가 매도 희망 가격"
           }
         />
-      </div>
-      <div className="formGroup">
-        <label>타입:</label>
-        <select value={type} onChange={(e) => setType(e.target.value)}>
-          <option value="buy">매수</option>
-          <option value="sell">매도</option>
-        </select>
       </div>
       <div className="formGroup">
         <label>입력 방식:</label>
