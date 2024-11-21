@@ -2,6 +2,7 @@ import useCoinData from "../hooks/useCoinData";
 
 const TopVolumeCoins = () => {
   const { coinData, error } = useCoinData();
+
   if (error) {
     return (
       <div
@@ -57,7 +58,12 @@ const TopVolumeCoins = () => {
       </span>
       거래량 상위 코인:{" "}
       {topVolumeCoins
-        .map((coin) => `${coin.koreanName} (${coin.tradeVolume}건)`)
+        .map(
+          (coin) =>
+            `${coin.koreanName} (${Number(
+              coin.tradeVolume.replace(/[^0-9]/g, "")
+            ).toLocaleString()}백만)`
+        )
         .join(", ")}
     </div>
   );

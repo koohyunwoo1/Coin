@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { placeBuyOrder, placeSellOrder } from "../service/api";
 import coinMapping from "../constants/coinMapping";
 import "../style/TradeForm.css";
@@ -31,21 +33,34 @@ const TradeForm = () => {
     synth.speak(utterance);
   };
 
+  const notify = (message, type = "info") => {
+    if (type === "success") {
+      toast.success(message, { position: "top-right", autoClose: 3000 });
+    } else if (type === "error") {
+      toast.error(message, { position: "top-right", autoClose: 3000 });
+    } else {
+      toast.info(message, { position: "top-right", autoClose: 3000 });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!coinNameInput || !amount) {
-      speak("모든 값을 입력해주세요.");
+      const errorMessage = "모든 값을 입력해주세요.";
+      speak(errorMessage);
+      notify(errorMessage, "error");
       return;
     }
 
-    // 한글 이름 -> 시장 이름 변환
     const marketName = Object.keys(coinMapping).find(
       (key) => coinMapping[key] === coinNameInput
     );
 
     if (!marketName) {
-      speak("유효한 코인 이름을 입력해주세요.");
+      const errorMessage = "유효한 코인 이름을 입력해주세요.";
+      speak(errorMessage);
+      notify(errorMessage, "error");
       return;
     }
 
@@ -62,18 +77,34 @@ const TradeForm = () => {
       if (type === "buy") {
         if (price) {
           await placeBuyOrder(`KRW-${marketName}`, volume, parseFloat(price));
-          speak("지정가 매수 주문이 등록되었습니다.");
+          const successMessage = `매수 주문: ${coinNameInput} (${price}원에 ${volume.toFixed(
+            6
+          )} 개 매수)`;
+          speak(successMessage);
+          notify(successMessage, "success");
         } else {
           await placeBuyOrder(`KRW-${marketName}`, volume);
-          speak("시장가 매수 주문이 등록되었습니다.");
+          const successMessage = `매수 주문: ${coinNameInput} (${currentPrice.toFixed(
+            2
+          )}원에 ${volume.toFixed(6)} 개 매수)`;
+          speak(successMessage);
+          notify(successMessage, "success");
         }
       } else {
         if (price) {
           await placeSellOrder(`KRW-${marketName}`, volume, parseFloat(price));
-          speak("지정가 매도 주문이 등록되었습니다.");
+          const successMessage = `매도 주문: ${coinNameInput} (${price}원에 ${volume.toFixed(
+            6
+          )} 개 매도)`;
+          speak(successMessage);
+          notify(successMessage, "success");
         } else {
           await placeSellOrder(`KRW-${marketName}`, volume);
-          speak("시장가 매도 주문이 등록되었습니다.");
+          const successMessage = `매도 주문: ${coinNameInput} (${currentPrice.toFixed(
+            2
+          )}원에 ${volume.toFixed(6)} 개 매도)`;
+          speak(successMessage);
+          notify(successMessage, "success");
         }
       }
 
@@ -81,79 +112,86 @@ const TradeForm = () => {
       setAmount("");
       setPrice("");
     } catch (error) {
-      speak("주문 실패");
+      const errorMessage = "주문 실패";
+      speak(errorMessage);
+      notify(errorMessage, "error");
       console.error(error);
     }
   };
 
   return (
-    <form className="tradeFormContainer" onSubmit={handleSubmit}>
-      <h1>{type === "buy" ? "매수" : "매도"}</h1>
-      <div className="formGroup">
-        <label>타입:</label>
-        <select value={type} onChange={(e) => setType(e.target.value)}>
-          <option value="buy">매수</option>
-          <option value="sell">매도</option>
-        </select>
-      </div>
-      <div className="formGroup">
-        <label>코인 이름:</label>
-        <input
-          type="text"
-          value={coinNameInput}
-          onChange={(e) => setCoinNameInput(e.target.value)}
-          placeholder="예: 비트코인"
-          required
-        />
-      </div>
-      <div className="formGroup">
-        <label>
-          {isKrwInput ? (
-            <>
-              금액 (KRW):{" "}
-              <span style={{ fontSize: "0.8rem", color: "#666" }}>
-                금액은 5천원 이상 매수해주세요.
-              </span>
-            </>
-          ) : (
-            "개수"
-          )}
-        </label>
-        <input
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder={
-            isKrwInput ? "매수/매도할 금액 (KRW)" : "매수/매도할 코인 개수"
-          }
-          required
-        />
-      </div>
-      <div className="formGroup">
-        <label>가격 ({type === "buy" ? "지정가 매수" : "지정가 매도"}):</label>
-        <input
-          type="number"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          placeholder={
-            type === "buy" ? "지정가 매수 희망 가격" : "지정가 매도 희망 가격"
-          }
-        />
-      </div>
-      <div className="formGroup">
-        <label>입력 방식:</label>
-        <select
-          value={isKrwInput ? "krw" : "coin"}
-          onChange={(e) => setIsKrwInput(e.target.value === "krw")}
-        >
-          <option value="krw">금액 (KRW)</option>
-          <option value="coin">개수</option>
-        </select>
-      </div>
-      <button className="submitButton" type="submit">
-        주문하기
-      </button>
-    </form>
+    <>
+      <ToastContainer /> {/* 토스트 알림 컴포넌트 추가 */}
+      <form className="tradeFormContainer" onSubmit={handleSubmit}>
+        <h1>{type === "buy" ? "매수" : "매도"}</h1>
+        <div className="formGroup">
+          <label>타입:</label>
+          <select value={type} onChange={(e) => setType(e.target.value)}>
+            <option value="buy">매수</option>
+            <option value="sell">매도</option>
+          </select>
+        </div>
+        <div className="formGroup">
+          <label>코인 이름:</label>
+          <input
+            type="text"
+            value={coinNameInput}
+            onChange={(e) => setCoinNameInput(e.target.value)}
+            placeholder="예: 비트코인"
+            required
+          />
+        </div>
+        <div className="formGroup">
+          <label>
+            {isKrwInput ? (
+              <>
+                금액 (KRW):{" "}
+                <span style={{ fontSize: "0.8rem", color: "#666" }}>
+                  금액은 5천원 이상 매수해주세요.
+                </span>
+              </>
+            ) : (
+              "개수"
+            )}
+          </label>
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder={
+              isKrwInput ? "매수/매도할 금액 (KRW)" : "매수/매도할 코인 개수"
+            }
+            required
+          />
+        </div>
+        <div className="formGroup">
+          <label>
+            가격 ({type === "buy" ? "지정가 매수" : "지정가 매도"}):
+          </label>
+          <input
+            type="number"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            placeholder={
+              type === "buy" ? "지정가 매수 희망 가격" : "지정가 매도 희망 가격"
+            }
+          />
+        </div>
+        <div className="formGroup">
+          <label>입력 방식:</label>
+          <select
+            value={isKrwInput ? "krw" : "coin"}
+            onChange={(e) => setIsKrwInput(e.target.value === "krw")}
+          >
+            <option value="krw">금액 (KRW)</option>
+            <option value="coin">개수</option>
+          </select>
+        </div>
+        <button className="submitButton" type="submit">
+          주문하기
+        </button>
+      </form>
+    </>
   );
 };
 

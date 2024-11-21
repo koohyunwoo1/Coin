@@ -60,6 +60,24 @@ const Accounts = () => {
     ],
   };
 
+  const pieOptions = {
+    plugins: {
+      legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+          font: {
+            size: 10,
+            family: "Arial",
+            weight: "bold",
+          },
+          color: "black",
+          padding: 10,
+        },
+      },
+    },
+  };
+
   return (
     <div className="accountsContainer">
       <h1>보유 자산</h1>
@@ -71,10 +89,11 @@ const Accounts = () => {
             ? "negative"
             : "neutral"
         }`}
+        style={{ display: "flex", alignItems: "center" }}
       >
-        <div>
+        <div className="assetsContainer">
           <p>
-            총 투자 금액: {parseFloat(totalAssets.investment).toLocaleString()}{" "}
+            총 보유 자산: {parseFloat(totalAssets.investment).toLocaleString()}{" "}
             <small style={{ fontSize: "12px", color: "gray" }}>KRW</small>
           </p>
           <p>
@@ -128,9 +147,9 @@ const Accounts = () => {
               <small style={{ fontSize: "12px", color: "gray" }}>KRW</small>
             </span>
           </p>
-          <div className="chartContainer">
-            <Pie data={pieData} />
-          </div>
+        </div>
+        <div className="chartContainer" style={{ flex: 1 }}>
+          <Pie data={pieData} options={pieOptions} />
         </div>
       </div>
       <h1>보유 자산 목록</h1>
