@@ -32,7 +32,6 @@
 
 .totalAssetsContainer {
   font-size: 18px;
-  margin-bottom: 16px;
   padding: 10px;
   font-weight: bold;
   border-radius: 4px;
@@ -40,29 +39,22 @@
   background-color: white;
 }
 
-.totalAssetsContainer .investment {
-  color: black;
-}
-
-.currency {
-  font-size: 12px;
-  color: gray;
-  margin-left: 4px;
-}
-
 .profitRate.positive,
 .profitEvaluation.positive {
   color: red;
+  font-weight: bold;
 }
 
 .profitRate.negative,
 .profitEvaluation.negative {
   color: blue;
+  font-weight: bold;
 }
 
 .profitRate.neutral,
 .profitEvaluation.neutral {
   color: black;
+  font-weight: bold;
 }
 
 .accountListItem {
@@ -81,10 +73,7 @@
 
 .accountText {
   font-size: 16px;
-  color: black;
-}
-
-.accountText.investment {
+  font-weight: bold;
   color: black;
 }
 
@@ -109,11 +98,6 @@
   background-color: #f1f1f1;
 }
 
-.accountTitle {
-  font-size: 18px;
-  font-weight: bold;
-}
-
 .accountSymbol {
   font-size: 14px;
   color: gray;
@@ -123,4 +107,43 @@
   margin-top: 60px;
   width: 400px;
   height: 400px;
+}
+
+.accountsContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.accountsContainer h1 {
+  font-size: 24px;
+  color: black;
+  font-weight: bold;
+}
+
+.assetsOverviewContainer,
+.assetsDetailsContainer {
+  padding: 10px;
+}
+
+.assetsOverviewContainer p,
+.assetsDetailsContainer p {
+  font-size: 16px;
+  margin: 12px 0;
+}
+
+.assetsOverviewContainer span,
+.assetsDetailsContainer span {
+  font-weight: bold;
+}
+
+.chartTooltip {
+  background-color: white !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+  margin-left: 150px;
 }
