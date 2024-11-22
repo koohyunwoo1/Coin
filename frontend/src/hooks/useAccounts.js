@@ -71,8 +71,8 @@ const useAccounts = () => {
         setAccounts(updatedAccounts);
         setTotalAssets({
           evaluation: totalEvaluation.toFixed(0),
-          investment: totalInvestment.toFixed(0),
-          profitRate: totalProfitRate.toFixed(2),
+          investment: totalInvestment.toFixed(2),
+          profitRate: totalProfitRate.toFixed(0),
         });
       } catch (error) {
         console.error("Failed to fetch accounts:", error);

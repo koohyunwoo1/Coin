@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { placeBuyOrder, placeSellOrder } from "../service/api";
 import coinMapping from "../constants/coinMapping";
 import "../style/TradeForm.css";
+import useAccounts from "../hooks/useAccounts";
 
 const TradeForm = () => {
   const [coinNameInput, setCoinNameInput] = useState("");
@@ -11,6 +12,7 @@ const TradeForm = () => {
   const [price, setPrice] = useState("");
   const [type, setType] = useState("buy");
   const [isKrwInput, setIsKrwInput] = useState(true);
+  const { accounts } = useAccounts();
 
   const fetchCurrentPrice = async (marketName) => {
     try {
@@ -40,6 +42,40 @@ const TradeForm = () => {
       toast.error(message, { position: "top-right", autoClose: 3000 });
     } else {
       toast.info(message, { position: "top-right", autoClose: 3000 });
+    }
+  };
+
+  const handlePercentageClick = (percentage) => {
+    if (type === "buy") {
+      const krwAccount = accounts.find((account) => account.currency === "KRW");
+      if (!krwAccount) {
+        const errorMessage = "원화 계좌 정보를 찾을 수 없습니다.";
+        speak(errorMessage);
+        notify(errorMessage, "error");
+        return;
+      }
+
+      const krwBalance = parseFloat(krwAccount.balance || "0");
+      const calculatedAmount = ((krwBalance * percentage) / 100).toFixed(2);
+      setAmount(calculatedAmount);
+    } else {
+      const selectedAccount = accounts.find(
+        (account) => account.currencyKorean === coinNameInput
+      );
+
+      if (!selectedAccount) {
+        const errorMessage =
+          "입력한 코인 이름에 해당하는 계좌를 찾을 수 없습니다.";
+        speak(errorMessage);
+        notify(errorMessage, "error");
+        return;
+      }
+
+      const evaluationValue = parseFloat(selectedAccount.evaluation || "0");
+      const calculatedAmount = ((evaluationValue * percentage) / 100).toFixed(
+        2
+      );
+      setAmount(calculatedAmount);
     }
   };
 
@@ -137,23 +173,27 @@ const TradeForm = () => {
             type="text"
             value={coinNameInput}
             onChange={(e) => setCoinNameInput(e.target.value)}
-            placeholder="예: 비트코인"
+            placeholder="예: 이더리움"
             required
           />
         </div>
         <div className="formGroup">
-          <label>
-            {isKrwInput ? (
-              <>
-                금액 (KRW):{" "}
-                <span style={{ fontSize: "0.8rem", color: "#666" }}>
-                  금액은 5천원 이상 매수해주세요.
-                </span>
-              </>
-            ) : (
-              "개수"
-            )}
-          </label>
+          <label>{type === "buy" ? "매수 비율:" : "매도 비율:"}</label>
+          <div>
+            {[10, 25, 50, 75, 100].map((percent) => (
+              <button
+                key={percent}
+                type="button"
+                onClick={() => handlePercentageClick(percent)}
+                className="ratioButton"
+              >
+                {percent}%
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="formGroup">
+          <label>{isKrwInput ? "금액 (KRW):" : "개수:"}</label>
           <input
             type="number"
             value={amount}

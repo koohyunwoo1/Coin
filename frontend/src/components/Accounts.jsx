@@ -9,11 +9,11 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Accounts = () => {
   const { accounts, totalAssets, loading, coinError } = useAccounts();
+  console.log(totalAssets);
   const krwAccount = accounts.find((account) => account.currency === "KRW");
   const orderableAmount = krwAccount
     ? parseFloat(krwAccount.balance).toFixed(0)
     : "0";
-
   const getCoinIconUrl = (symbol) =>
     `https://static.upbit.com/logos/${symbol}.png`;
 
