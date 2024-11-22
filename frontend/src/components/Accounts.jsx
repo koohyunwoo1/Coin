@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import useAccounts from "../hooks/useAccounts";
@@ -9,7 +10,9 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Accounts = () => {
   const { accounts, totalAssets, loading, coinError } = useAccounts();
-  console.log(totalAssets);
+  const [hideUnsupportedOrSmallAssets, setHideUnsupportedOrSmallAssets] =
+    useState(false);
+
   const krwAccount = accounts.find((account) => account.currency === "KRW");
   const orderableAmount = krwAccount
     ? parseFloat(krwAccount.balance).toFixed(0)
@@ -26,9 +29,24 @@ const Accounts = () => {
       </p>
     );
 
-  const filteredAccounts = accounts.filter(
-    (account) => account.currency !== "KRW"
-  );
+  const totalEvaluationSum = accounts
+    .filter((account) => account.currency !== "KRW")
+    .reduce((sum, account) => sum + parseFloat(account.evaluation || 0), 0);
+
+  const calculatedProfitRate =
+    ((totalEvaluationSum - parseFloat(totalAssets.investment)) /
+      parseFloat(totalAssets.investment)) *
+    100;
+
+  const filteredAccounts = accounts.filter((account) => {
+    if (account.currency === "KRW") return false;
+    if (
+      hideUnsupportedOrSmallAssets &&
+      (account.evaluation <= 0 || parseFloat(account.evaluation) < 5000)
+    )
+      return false;
+    return true;
+  });
 
   const coinLabels = filteredAccounts.map(
     (account) => `${account.currencyKorean} (${account.currency})`
@@ -36,16 +54,6 @@ const Accounts = () => {
   const coinData = filteredAccounts.map((account) =>
     parseFloat(account.evaluation)
   );
-
-  const totalEvaluationSum = filteredAccounts.reduce(
-    (sum, account) => sum + parseFloat(account.evaluation),
-    0
-  );
-
-  const calculatedProfitRate =
-    ((totalEvaluationSum - parseFloat(totalAssets.investment)) /
-      parseFloat(totalAssets.investment)) *
-    100;
 
   const pieOptions = {
     plugins: {
@@ -106,6 +114,7 @@ const Accounts = () => {
           <Pie data={pieData} options={pieOptions} />
         </ReactTooltip>
       </h1>
+
       <div
         className={`totalAssetsContainer ${
           calculatedProfitRate > 0
@@ -191,83 +200,91 @@ const Accounts = () => {
 
       <div>
         <h1>보유 자산 목록</h1>
+        <div className="filterOptions">
+          <label>
+            <input
+              type="checkbox"
+              checked={hideUnsupportedOrSmallAssets}
+              onChange={(e) =>
+                setHideUnsupportedOrSmallAssets(e.target.checked)
+              }
+            />
+            거래 미지원 / 소액 자산 숨기기
+          </label>
+        </div>
         <ul>
-          {accounts
-            .filter((account) => account.currency !== "KRW")
-            .map((account, index) => (
-              <li className="accountListItem" key={index}>
-                <div className="coinItem">
-                  <div
-                    className="coinIcon"
-                    style={{
-                      background: `url(${getCoinIconUrl(
-                        account.currency
-                      )}) 0px 0px / cover no-repeat`,
-                    }}
-                  ></div>
-                  <div>
-                    <span className="accountTitle">
-                      {account.currencyKorean}
-                    </span>
-                    <span className="accountSymbol">({account.currency})</span>
-                  </div>
+          {filteredAccounts.map((account, index) => (
+            <li className="accountListItem" key={index}>
+              <div className="coinItem">
+                <div
+                  className="coinIcon"
+                  style={{
+                    background: `url(${getCoinIconUrl(
+                      account.currency
+                    )}) 0px 0px / cover no-repeat`,
+                  }}
+                ></div>
+                <div>
+                  <span className="accountTitle">{account.currencyKorean}</span>
+                  <span className="accountSymbol">({account.currency})</span>
                 </div>
-                <span className="accountText investment">
-                  투자 금액: {parseFloat(account.investment).toLocaleString()}
-                  <small
-                    style={{
-                      marginLeft: "5px",
-                      fontSize: "12px",
-                      color: "gray",
-                    }}
-                  >
-                    KRW
-                  </small>
-                </span>
-                <span className="accountText">
-                  평가 금액: {parseFloat(account.evaluation).toLocaleString()}
-                  <small
-                    style={{
-                      marginLeft: "5px",
-                      fontSize: "12px",
-                      color: "gray",
-                    }}
-                  >
-                    KRW
-                  </small>
-                </span>
-                <span className="accountText">
-                  매수평균가:{" "}
-                  {account.avg_buy_price
-                    ? parseFloat(account.avg_buy_price).toLocaleString()
-                    : "N/A"}
-                  <small
-                    style={{
-                      marginLeft: "5px",
-                      fontSize: "12px",
-                      color: "gray",
-                    }}
-                  >
-                    KRW
-                  </small>
-                </span>
-                <span className="accountText">
-                  보유 개수: {parseFloat(account.balance).toFixed(2)}{" "}
-                  {account.currency}
-                </span>
-                <span
-                  className={`profitRate ${
-                    parseFloat(account.profitRate) > 0
-                      ? "positive"
-                      : parseFloat(account.profitRate) < 0
-                      ? "negative"
-                      : "neutral"
-                  }`}
+              </div>
+              <span className="accountText investment">
+                투자 금액: {parseFloat(account.investment).toLocaleString()}
+                <small
+                  style={{
+                    marginLeft: "5px",
+                    fontSize: "12px",
+                    color: "gray",
+                  }}
                 >
-                  수익률: {parseFloat(account.profitRate).toFixed(2)}%
-                </span>
-              </li>
-            ))}
+                  KRW
+                </small>
+              </span>
+              <span className="accountText">
+                평가 금액: {parseFloat(account.evaluation).toLocaleString()}
+                <small
+                  style={{
+                    marginLeft: "5px",
+                    fontSize: "12px",
+                    color: "gray",
+                  }}
+                >
+                  KRW
+                </small>
+              </span>
+              <span className="accountText">
+                매수평균가:{" "}
+                {account.avg_buy_price
+                  ? parseFloat(account.avg_buy_price).toLocaleString()
+                  : "N/A"}
+                <small
+                  style={{
+                    marginLeft: "5px",
+                    fontSize: "12px",
+                    color: "gray",
+                  }}
+                >
+                  KRW
+                </small>
+              </span>
+              <span className="accountText">
+                보유 개수: {parseFloat(account.balance).toFixed(2)}{" "}
+                {account.currency}
+              </span>
+              <span
+                className={`profitRate ${
+                  parseFloat(account.profitRate) > 0
+                    ? "positive"
+                    : parseFloat(account.profitRate) < 0
+                    ? "negative"
+                    : "neutral"
+                }`}
+              >
+                수익률: {parseFloat(account.profitRate).toFixed(2)}%
+              </span>
+            </li>
+          ))}
         </ul>
       </div>
     </div>
