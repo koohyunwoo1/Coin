@@ -4,6 +4,8 @@ import SurgeAndDip from "../components/SurgeAndDip";
 import TopVolumeCoins from "../components/TopVolumeCoins";
 import Accounts from "../components/Accounts";
 import TradeForm from "../components/TradeForm";
+// import RealTimeCandleChart from "../components/Chart";
+
 import "../style/Dashboard.css";
 
 const Dashboard = () => {
@@ -44,6 +46,7 @@ const Dashboard = () => {
       <div className="dashboardContainer">
         <div className="accountsSection">
           <Accounts />
+          {/* <RealTimeCandleChart /> */}
         </div>
         <div className="tradeFormSection">
           <TradeForm />

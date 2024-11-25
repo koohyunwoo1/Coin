@@ -140,38 +140,34 @@ const useTradeForm = () => {
       if (type === "buy") {
         if (price) {
           await placeBuyOrder(`KRW-${marketName}`, volume, parseFloat(price));
-          notify(
-            `매수 주문: ${coinNameInput} (${price}원에 ${volume.toFixed(
-              6
-            )} 개 매수)`,
-            "success"
-          );
+          const successMessage = `매수 주문 완료: ${coinNameInput} (${price}원에 ${volume.toFixed(
+            6
+          )} 개 매수)`;
+          notify(successMessage, "success");
+          speak(successMessage);
         } else {
           await placeBuyOrder(`KRW-${marketName}`, volume);
-          notify(
-            `매수 주문: ${coinNameInput} (${currentPrice.toFixed(
-              2
-            )}원에 ${volume.toFixed(6)} 개 매수)`,
-            "success"
-          );
+          const successMessage = `매수 주문 완료: ${coinNameInput} (${currentPrice.toFixed(
+            2
+          )}원에 ${volume.toFixed(6)} 개 매수)`;
+          notify(successMessage, "success");
+          speak(successMessage);
         }
       } else {
         if (price) {
           await placeSellOrder(`KRW-${marketName}`, volume, parseFloat(price));
-          notify(
-            `매도 주문: ${coinNameInput} (${price}원에 ${volume.toFixed(
-              6
-            )} 개 매도)`,
-            "success"
-          );
+          const successMessage = `매도 주문 완료: ${coinNameInput} (${price}원에 ${volume.toFixed(
+            6
+          )} 개 매도)`;
+          notify(successMessage, "success");
+          speak(successMessage);
         } else {
           await placeSellOrder(`KRW-${marketName}`, volume);
-          notify(
-            `매도 주문: ${coinNameInput} (${currentPrice.toFixed(
-              2
-            )}원에 ${volume.toFixed(6)} 개 매도)`,
-            "success"
-          );
+          const successMessage = `매도 주문 완료: ${coinNameInput} (${currentPrice.toFixed(
+            2
+          )}원에 ${volume.toFixed(6)} 개 매도)`;
+          notify(successMessage, "success");
+          speak(successMessage);
         }
       }
 

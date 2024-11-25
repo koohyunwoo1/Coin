@@ -1,11 +1,12 @@
-import "../style/Table.css";
 import { FiSearch } from "react-icons/fi";
-import useTableLogic from "../hooks/useTableLogic";
+import { useCoinContext } from "../context/coinContext";
 import useSearch from "../hooks/useSearch";
+import useTableLogic from "../hooks/useTableLogic";
+import "../style/Table.css";
 
 const Table = ({ coinData, error }) => {
+  const { setSelectedCoin } = useCoinContext();
   const { searchTerm, setSearchTerm, filteredData } = useSearch(coinData);
-
   const {
     sortedData,
     handleSort,
@@ -41,13 +42,13 @@ const Table = ({ coinData, error }) => {
         </thead>
         <tbody>
           {sortedData.map((coin, index) => (
-            <tr key={index}>
+            <tr
+              key={index}
+              onClick={() => setSelectedCoin(coin.koreanName)}
+              style={{ cursor: "pointer" }}
+            >
               <td>{coin.koreanName}</td>
-              <td
-                style={{
-                  color: getCurrentPriceColor(coin.changeRate),
-                }}
-              >
+              <td style={{ color: getCurrentPriceColor(coin.changeRate) }}>
                 {coin.currentPrice}
               </td>
               <td style={{ color: getChangeRateColor(coin.changeRate) }}>

@@ -2,8 +2,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../style/TradeForm.css";
 import useTradeForm from "../hooks/useTradeForm";
+import { useCoinContext } from "../context/coinContext";
+import { useEffect } from "react";
 
 const TradeForm = () => {
+  const { selectedCoin } = useCoinContext();
   const {
     coinNameInput,
     setCoinNameInput,
@@ -18,6 +21,12 @@ const TradeForm = () => {
     handlePercentageClick,
     handleSubmit,
   } = useTradeForm();
+
+  useEffect(() => {
+    if (selectedCoin) {
+      setCoinNameInput(selectedCoin);
+    }
+  }, [selectedCoin, setCoinNameInput]);
 
   return (
     <>
