@@ -3,6 +3,8 @@ import Dashboard from "./pages/Dashboard";
 import Table from "./components/Table";
 import useCoinData from "./hooks/useCoinData";
 import { CoinProvider } from "./context/coinContext";
+import ChatFloatingButton from "./components/ChatFloatingButton";
+
 import "./App.css";
 
 const App = () => {
@@ -20,6 +22,7 @@ const App = () => {
             <Table coinData={coinData} error={error} />
           </div>
         </div>
+        <ChatFloatingButton />
       </div>
     </CoinProvider>
   );
