@@ -65,7 +65,7 @@ const useChat = () => {
   const renderTypingEffect = (responseText) => {
     let index = 0;
     const botMessage = {
-      user: "../assets/chatbot.png",
+      user: "src/assets/chatbot.png",
       content: "",
     };
 

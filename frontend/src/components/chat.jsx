@@ -15,7 +15,7 @@ const ChatGPT = () => {
 
   return (
     <div className="chatContainer">
-      <h1 className="chatHeader">Coin Chat</h1>
+      <h1 className="chatHeader">Chat</h1>
 
       <div className="chatBox" ref={chatBoxRef}>
         {chatHistory.map((msg, index) => (
@@ -37,8 +37,8 @@ const ChatGPT = () => {
         ))}
         {loading && (
           <div className="botMessage">
-            <img src="../assets/chatbot.png" className="chatBotImage" />
-            <strong>ChatGPT:</strong> {loadingDots}
+            <img src="src/assets/chatbot.png" className="chatBotImage" />
+            {loadingDots}
           </div>
         )}
       </div>
