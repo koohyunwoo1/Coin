@@ -3,7 +3,6 @@ const crypto = require("crypto");
 const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
 const { ACCESS_KEY, SECRET_KEY, BASE_URL } = require("../config/upbitConfig");
-
 // 인증 헤더 생성
 const generateAuthHeaders = (body) => {
   const query = new URLSearchParams(body).toString();
