@@ -24,9 +24,7 @@ const ChatGPT = () => {
             className={msg.user === "You" ? "userMessage" : "botMessage"}
           >
             {msg.user === "You" ? (
-              <>
-                <strong>{msg.user}:</strong> {msg.content}
-              </>
+              <>{msg.content}</>
             ) : (
               <>
                 <img src={msg.user} alt="Chatbot" className="chatBotImage" />

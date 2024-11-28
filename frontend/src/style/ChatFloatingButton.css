@@ -1,14 +1,17 @@
 .chatFloatingContainer {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
   z-index: 1000;
+  cursor: grab;
+}
+
+.chatFloatingContainer:active {
+  cursor: grabbing;
 }
 
 .chatFloatingButton {
   width: 60px;
   height: 60px;
-  background-color: #007bff;
+  background-color: black;
   color: white;
   border: none;
   border-radius: 50%;
@@ -22,13 +25,12 @@
 }
 
 .chatFloatingButton:hover {
+  background-color: #333;
   transform: scale(1.2);
 }
 
 .chatBubble {
   position: fixed;
-  bottom: 90px;
-  right: 20px;
   width: 400px;
   height: 550px;
   background-color: white;

@@ -16,9 +16,27 @@
   padding: 10px;
   border-radius: 5px;
   height: 400px;
-  overflow-y: scroll;
+  overflow-y: auto; 
   margin-bottom: 20px;
   background-color: #f9f9f9;
+}
+
+.chatBox::-webkit-scrollbar {
+  width: 10px; 
+}
+
+.chatBox::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3); 
+  border-radius: 10px; 
+}
+
+.chatBox::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5); 
+}
+
+.chatBox::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.1); 
+  border-radius: 10px;
 }
 
 .chatBotImage {
@@ -29,16 +47,23 @@
   vertical-align: middle;
 }
 
+.userMessage,
+.botMessage {
+  margin: 10px 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+
 .userMessage {
   text-align: right;
-  margin: 10px 0;
   color: #007bff;
+  padding-right: 10px;
 }
 
 .botMessage {
   text-align: left;
-  margin: 10px 0;
   color: #333;
+  padding-left: 10px;
 }
 
 .chatInputContainer {
@@ -55,9 +80,14 @@
 
 .chatSendButton {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #000;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chatSendButton:hover {
+  background-color: #333;
 }
