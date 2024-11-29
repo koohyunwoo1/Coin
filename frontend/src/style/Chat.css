@@ -16,26 +16,26 @@
   padding: 10px;
   border-radius: 5px;
   height: 400px;
-  overflow-y: auto; 
+  overflow-y: auto;
   margin-bottom: 20px;
   background-color: #f9f9f9;
 }
 
 .chatBox::-webkit-scrollbar {
-  width: 10px; 
+  width: 10px;
 }
 
 .chatBox::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3); 
-  border-radius: 10px; 
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
 }
 
 .chatBox::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.5); 
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .chatBox::-webkit-scrollbar-track {
-  background-color: rgba(0, 0, 0, 0.1); 
+  background-color: rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
 
